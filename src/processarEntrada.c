@@ -5,37 +5,41 @@
 #include "utils.h"
 
 typedef enum Erros {Lexico, Gramatical, SemErros} Erros;
-typedef enum Tokens {Instrucao, Diretiva, DefRotulo, Hexadecimal, Decimal, Nome, Comentario} Tokens;
 
-Tokens verificarToken(char* palavra) {
+int verificarToken(char* palavra, TipoDoToken *token) {
     //identifica qual tipo do token foi passado
+    return 1;
 }
-int somarTokens(Tokens token, char* palavra) {
+int getValorToken(TipoDoToken token, char* palavra) {
     switch (token) {
         case DefRotulo: return 1; break;
         case Instrucao: return 2; break;
         case Diretiva: return 2; break;
-        case Comentario: return 4; break;
-        default: return 0; break;
+        default: return (palavra[0] == '#' ? 4 : 0); break;
     }
 }
-
 int verificarLinha(char* linha, int numero_linha){
     char **palavras = separarString(linha, sizeof linha, ' ');
     int i = 0;
     int ordem_tokens = 0;
+    int resultado, valor_token;
     while (palavras[i] != NULL) {
        
-        Tokens token = verificarToken(palavras[i]);
-        if (token == NULL) {
+        TipoDoToken *token = NULL;
+        resultado = verificarToken(palavras[i], token);
+        if (!resultado) {
             //Erro léxico
             return Lexico;
         }
-        if (temErroGramatical(ordem_tokens, token)) {
+        valor_token =  getValorToken(*token, palavras[i]);
+        if (ordem_tokens > valor_token) {
+            //Erro gramatical
             return Gramatical;
         }
-        return SemErros;
+        ordem_tokens = ordem_tokens + valor_token;
+        i++;
     }
+    return SemErros;
 }
 
 int processarEntrada(char* entrada, unsigned tamanho) 
