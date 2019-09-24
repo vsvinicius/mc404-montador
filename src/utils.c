@@ -2,14 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 int contarOcorrencias(char* entrada, unsigned tamanho, char caracter){
     int contador = 0;
-    int i;
-    for(i = 0; i < tamanho; i++){
+    int i = 0;
+    while(entrada[i] != '\0') {
         if(entrada[i] == caracter){
             contador++;
         }
+        i++;
     }
     return contador;
 }
@@ -25,4 +27,45 @@ char** separarString(char* entrada, unsigned tamanho, char caracter){
        ocorrencias++;
     }
     return nova_string;
+}
+int includes(char* key, char** array) {
+    int i = 0;
+    while(array[i] != NULL){
+        if (strcmp(key,array[i]) == 0) {
+            return 1;
+        }
+        i++;
+    }
+    return 0;
+}
+char* toLowerCase(char* source) {
+    char *new_word = malloc((sizeof source) * sizeof (char));
+    int i=0;
+    while(source[i] != '\0') {
+        new_word[i] = tolower(source[i]);
+        i++;
+    }
+    return new_word;
+}
+int isHexadecimal(char* source) {
+    int i = 0;
+    if(source[0] != '0' || source[1] != 'x') return 0;
+
+    while(source[i] != '\0') {
+        if(!isxdigit(source[i]) && source[i] != 'x') {
+            return 0;
+        }    
+        i++;
+    }
+    return 1;
+}
+int isDecimal(char* source) {
+    int i = 0;
+    while(source[i] != '\0') {
+        if(!isdigit(source[i])) {
+            return 0;
+        }
+        i++;    
+    }
+    return 1;
 }
