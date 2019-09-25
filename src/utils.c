@@ -28,9 +28,10 @@ char** separarString(char* entrada, unsigned tamanho, char caracter){
     }
     return nova_string;
 }
-int includes(char* key, char** array) {
+int includes(char* key, char** array, int tamanho) {
     int i = 0;
-    while(array[i] != NULL){
+    
+    while(i < tamanho){
         if (strcmp(key,array[i]) == 0) {
             return 1;
         }
@@ -38,14 +39,13 @@ int includes(char* key, char** array) {
     }
     return 0;
 }
-char* toLowerCase(char* source) {
-    char *new_word = malloc((sizeof source) * sizeof (char));
+void toLowerCase(char* source) {
+    // char *new_word = malloc((sizeof source) * sizeof (char));
     int i=0;
     while(source[i] != '\0') {
-        new_word[i] = tolower(source[i]);
+        source[i] = tolower(source[i]);
         i++;
     }
-    return new_word;
 }
 int isHexadecimal(char* source) {
     int i = 0;
@@ -61,11 +61,12 @@ int isHexadecimal(char* source) {
 }
 int isDecimal(char* source) {
     int i = 0;
+    // printf(" is decimal - %lu\n",strlen(source));
     while(source[i] != '\0') {
         if(!isdigit(source[i])) {
             return 0;
         }
         i++;    
     }
-    return 1;
+    return strlen(source) > 0;
 }

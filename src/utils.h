@@ -25,7 +25,7 @@ char** separarString(char*, unsigned, char);
         -> array que vai ser iterado
     *saida: 1 caso exista, 0 caso não exista
 */
-int includes(char*, char**);
+int includes(char*, char**,int);
 
 /*
     *retorna uma string com letras minusculas
@@ -34,7 +34,7 @@ int includes(char*, char**);
     *saida:
         -> nova string com letras minusculas
 */
-char* toLowerCase(char*);
+void toLowerCase(char*);
 /*
     *verifica se todos os digitos da string sao hexadecimais, retorna 1 caso todos forem e 0 caso nao algum nao for
     *entrada:
