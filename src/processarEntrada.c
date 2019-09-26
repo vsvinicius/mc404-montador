@@ -32,7 +32,7 @@ int verificarToken(char* palavra, int linha, int ordem) {
     }
     //Rotulo
     if((result = strchr(palavra,':')) != NULL) {
-        if(isdigit(palavra[0])) return 0;
+        if(isdigit(palavra[0])) return Lexico;
         i = 0;
          while(palavra[i] != '\0' && palavra[i] != ' ' && palavra[i] != '\t' && palavra[i] != '\n' && palavra[i] != ':') {
             if(!isalnum(palavra[i]) && palavra[i] != '_') {
@@ -82,42 +82,51 @@ int verificarLinha(int linha){
     while(qtd > i) {
         Token *token = recuperaToken(i);
         if((*token).linha > linha) break;
-        if(i == linha && (*token).linha == linha){
+        if((*token).linha == linha){
             if((*token).tipo == Diretiva){
-                Token *arg_1 = recuperaToken(i+1);
-                Token *arg_2 = recuperaToken(i+2);
+                Token *arg_1 = (i+1 <= qtd) ? recuperaToken(i+1) : NULL;
+                Token *arg_2 = (i+2 <= qtd) ? recuperaToken(i+2) : NULL;
                 if((*arg_1).tipo == DefRotulo || (*arg_1).tipo == Instrucao) return Gramatical;
                 char *diretiva = malloc(10*sizeof(char));
                  strcpy(diretiva,".set");
                 if(strcmp((*token).palavra,diretiva) == 0){
+                    if(arg_1 == NULL || arg_2 == NULL) return Gramatical;
                     if((*arg_1).tipo != Nome) return Gramatical;
                     if((*arg_2).tipo != Hexadecimal && (*arg_2).tipo != Decimal) return Gramatical;
                 }
                 strcpy(diretiva,".org");
                 if(strcmp((*token).palavra,diretiva) == 0){
+                    if(arg_1 == NULL) return Gramatical;
                     if((*arg_1).tipo != Hexadecimal && (*arg_1).tipo != Decimal) return Gramatical;
                     if((*arg_1).tipo == Decimal){
-                        int decimal = (int) (*arg_1).palavra;
+                        int decimal = atoi((*arg_1).palavra);
                         if(decimal > 1023 || decimal < 0) return Gramatical;
                     }
                 }
                 strcpy(diretiva,".align");
                 if(strcmp((*token).palavra,diretiva) == 0){
+                    if(arg_1 == NULL) return Gramatical;
                     if((*arg_1).tipo != Decimal) return Gramatical;
-                    int decimal = (int) (*arg_1).palavra;
+                    int decimal = atoi((*arg_1).palavra);
                     // printf("%d",decimal);
                     if(decimal > 1023 || decimal < 0) return Gramatical;
                 }
                 strcpy(diretiva,".wfill");
                 if(strcmp((*token).palavra,diretiva) == 0){
+                    if(arg_1 == NULL || arg_2 == NULL) return Gramatical;
                     if((*arg_1).tipo != Decimal) return Gramatical;
-                    int decimal = (int) (*arg_1).palavra;
+                    int decimal = atoi((*arg_1).palavra);
+
                     if(decimal > 1023 || decimal < 0) return Gramatical;
-                    if((*arg_2).tipo != Hexadecimal && (*arg_2).tipo != Decimal && (*arg_2).tipo != Nome ) return Gramatical;
+
+                    if((*arg_2).tipo != Hexadecimal && (*arg_2).tipo != Decimal
+                     && (*arg_2).tipo != Nome && (*arg_2).linha == linha ) return Gramatical;
                 }
                 strcpy(diretiva,".word");
                 if(strcmp((*token).palavra,diretiva) == 0){
+                    if(arg_1 == NULL) return Gramatical;
                     if((*arg_1).tipo != Hexadecimal && (*arg_1).tipo != Decimal && (*arg_1).tipo != Nome ) return Gramatical;
+                    if((*arg_2).linha == linha) return Gramatical;
                 }
             }
             if((*token).tipo == Instrucao){
@@ -125,7 +134,7 @@ int verificarLinha(int linha){
                 if((*arg_1).tipo == Diretiva && (*arg_1).linha == linha) return Gramatical;
                 if((*arg_1).tipo != Hexadecimal && (*arg_1).tipo != Decimal && (*arg_1).tipo != Nome && ((*arg_1).linha == linha)) return Gramatical;
                 if((*arg_1).tipo == Decimal && ((*arg_1).linha == linha)) {
-                    int decimal = (int) (*arg_1).palavra;
+                    int decimal = atoi((*arg_1).palavra);
                     if(decimal > 1023 || decimal < 0) return Gramatical;
                 }
             }
@@ -134,7 +143,7 @@ int verificarLinha(int linha){
                 if((*arg_1).tipo == Diretiva && (*arg_1).linha == linha) return Gramatical;
                 if((*arg_1).tipo != Hexadecimal && (*arg_1).tipo != Decimal && (*arg_1).tipo != Nome && ((*arg_1).linha == linha)) return Gramatical;
                 if((*arg_1).tipo == Decimal && ((*arg_1).linha == linha)) {
-                    int decimal = (int) (*arg_1).palavra;
+                    int decimal = atoi((*arg_1).palavra);
                     if(decimal > 1023 || decimal < 0) return Gramatical;
                 }
             }

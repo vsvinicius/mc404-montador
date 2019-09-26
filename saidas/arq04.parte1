@@ -1,9 +1,1 @@
-Lista de tokens
-Token 0
-	Tipo: 1001 (Diretiva)
-	Palavra: ".org"
-	Linha: 1
-Token 1
-	Tipo: 1003 (Hexadecimal)
-	Palavra: "0x100"
-	Linha: 1
+ERRO LEXICO: palavra inválida na linha 3!
